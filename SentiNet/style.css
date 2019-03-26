@@ -5,5 +5,14 @@
 
 #mainCanvas {
     padding: 0;
+    position: relative;
+    padding-bottom: 120px;
 
+}
+
+img {
+    height: 75px;
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 40px;
 }

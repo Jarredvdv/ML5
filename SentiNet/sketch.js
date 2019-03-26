@@ -15,14 +15,39 @@ let canvas;
 let classes = ['Happy', 'Sad', 'Surprised', 'Angry'];
 let classesCount = [0, 0, 0, 0];
 
+//Variables used for style transfer
+let style;
+let style1;
+let style2;
+
+let isTransferring = false;
+let resultImg;
+let sourceImg;
+
+let curEmotion;
+
 function setup() {
+  createCanvas(640, 480).parent('mainCanvas');
+
   video = createCapture(VIDEO);
-  video.parent('mainCanvas');
-  video.size(649, 480);
-  video.position(0, 0);
   video.hide();
-  canvas = createCanvas(640, 480);
-  canvas.parent('mainCanvas');
+
+  // The results image from the style transfer
+  resultImg = createImg('');
+  resultImg.hide();
+
+  status = select('#status');
+  sourceImg = select('#sourceImage');
+
+  select('#startStop').mousePressed(startStop);
+
+  // Create a new Style Transfer method with a defined style.
+  // We give the video as the second argument
+  happyStyle = ml5.styleTransfer('models/rain_princess', video, modelLoaded);
+  sadStyle = ml5.styleTransfer('models/wave', video, modelLoaded);
+  angryStyle = ml5.styleTransfer('models/hoangho', video, modelLoaded);
+  surprisedStyle = ml5.styleTransfer('models/udnie', video, modelLoaded);
+
   background(20);
 
   // video.hide();
@@ -50,6 +75,7 @@ function setup() {
     probabilities.push(select('#class' + (i - (-1)) + '-probability'));
     classButtons.push(select('#class' + (i - (-1)) + 'button'));
     classButtons[i].mousePressed(function () {
+      select('#status').html('Adding training data...');
       // while(cut.pixels.length == 0);
       // console.log(cut);
       classifier.addImage(classes[i], () =>{
@@ -59,13 +85,16 @@ function setup() {
     });
   }
   trainButton = select('#train-button');
+
   trainButton.mousePressed(function () {
+    select('#status').html('Training emotion classification model...');
     let progress = 0;
     classifier.train((loss) => {
       if (loss === null) {
         trainingProgress.attribute('style', 'width:100%');
         trainingProgress.html('Finished');
         console.log('Training finished!');
+        select('#status').html('Classification model trained! Style transfer is ready.');
         classifier.classify(gotResults);
       } else {
         progress = lerp(progress, 100, .2);
@@ -79,23 +108,79 @@ function setup() {
   noStroke();
 }
 
-function draw() {
-  image(video, 0, 0);
+function draw(){
+  // Switch between showing the raw camera or the style
+  if (isTransferring) {
+    styleType = getStyle();
+    image(resultImg, 0, 0, 640, 480);
+  } else {
+    image(video, 0, 0, 640, 480);
+  }
 }
 
 function gotResults(error, result) {
   if (error) {
-    console.log(error);
   } else {
     // console.log(result);
     for (let i = 0; i < 4; i++) {
       predictions[i].html(classes[i]);
       probabilities[i].html((result == classes[i] ? 100 : 0) + '%');
       probabilities[i].attribute('aria-valuenow', (result == classes[i] ? 100 : 0));
-      // probabilities[i].attribute('style', 'width:' + floor(results[i].probability * 100)+ '%');
       probabilities[i].attribute('style', 'width:' + (result == classes[i] ? 100 : 0) + '%');
     }
     classifier.classify(gotResults);
+    curEmotion = result;
   }
 
+}
+
+// A function to call when the model has been loaded.
+function modelLoaded() {
+  select('#status').html('Style transfer models loaded');
+}
+
+// Start and stop the transfer process
+function startStop() {
+  if (isTransferring) {
+    select('#startStop').html('Start');
+    select('#status').html('Style transfer ready');
+    sourceImg.attribute('src', "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D");
+  } else {
+    styleType = getStyle();
+    select('#startStop').html('Stop');
+    select('#status').html('Updating portrait...');
+    // Make a transfer using the video
+    style.transfer(gotResult);
+  }
+  isTransferring = !isTransferring;
+}
+
+
+
+function getStyle(){
+  if(curEmotion == 'Happy'){
+    style = happyStyle;
+    sourceImg.attribute('src', "images/rain_princess.jpg");
+  }
+  else if (curEmotion == 'Sad'){
+    style = sadStyle;
+    sourceImg.attribute('src', "images/wave.jpg");
+  }
+  else if (curEmotion == 'Surprised'){
+    style = surprisedStyle;
+    sourceImg.attribute('src', "images/udnie.jpg");
+  }
+  else if (curEmotion == 'Angry'){
+    style = angryStyle;
+    sourceImg.attribute('src', "images/hoangho.jpg");
+  }
+}
+
+
+// When we get the results, update the result image src
+function gotResult(err, img) {
+  resultImg.attribute('src', img.src);
+  if (isTransferring) {
+    style.transfer(gotResult);
+  }
 }

@@ -8,12 +8,14 @@
     </link>
     <link rel="stylesheet" type="text/css" href="./style.css">
     </link>
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
     <script src="libraries/model_pca_20_svm.js"></script>
     <script src="libraries/p5.min.js"></script>
-    <script src="libraries/p5.dom.min.js"></script>
     <script src="libraries/p5ml.min.js"></script>
-    <script src="sketch.js"></script>
+    <script src="libraries/p5.dom.min.js"></script>
+
   </head>
+
 
   <body>
     <div class="container p-3">
@@ -25,9 +27,11 @@
     <div id="app" class="container">
       <div class="row">
         <div class="col-md-6" id="mainCanvas">
+          <img id="sourceImage" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D">
         </div>
         <div class="col-md-6 p-3">
-          <h1>Predicion</h1>
+          <h1>Sentinet</h1>
+          <p id="status">Loading style transfer models...</p>
           <p id="prediction"></p>
           <div class="row mt-4 learning-class" id="class1">
             <h3 class="col-md-12" id="class1-name">
@@ -97,6 +101,7 @@
         </div>
         <div class="col-md-4">
           <a href="#" class="btn btn-primary " id="train-button"> Train </a>
+          <a href="#" class="btn btn-light " id="startStop"> Transfer </a>
         </div>
       </div>
 
@@ -109,6 +114,7 @@
         </div>
       </div>
     </div>
+    <script src="sketch.js"></script>
   </body>
 
 </html>
