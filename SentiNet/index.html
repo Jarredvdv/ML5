@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SentiNet</title>
+    <title>Painting with Emotion</title>
     <link rel="stylesheet" type="text/css" href="./libraries/bootstrap.min.css">
     </link>
     <link rel="stylesheet" type="text/css" href="./style.css">
@@ -11,7 +11,7 @@
     <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
     <script src="libraries/model_pca_20_svm.js"></script>
     <script src="libraries/p5.min.js"></script>
-    <script src="libraries/p5ml.min.js"></script>
+    <script src="https://unpkg.com/ml5@0.1.3/dist/ml5.min.js"></script>
     <script src="libraries/p5.dom.min.js"></script>
 
   </head>
@@ -30,7 +30,7 @@
           <img id="sourceImage" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D">
         </div>
         <div class="col-md-6 p-3">
-          <h1>Sentinet</h1>
+          <h2>Painting with Emotion</h2>
           <p id="status">Loading style transfer models...</p>
           <p id="prediction"></p>
           <div class="row mt-4 learning-class" id="class1">
@@ -102,6 +102,8 @@
         <div class="col-md-4">
           <a href="#" class="btn btn-primary " id="train-button"> Train </a>
           <a href="#" class="btn btn-light " id="startStop"> Transfer </a>
+          <a href="#" class="btn btn-warning " id="add-samples"> Add Samples </a>
+          <a href="#" class="btn btn-success " id="pretrained"> Pretrained </a>
         </div>
       </div>
 

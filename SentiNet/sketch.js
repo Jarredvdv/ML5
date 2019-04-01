@@ -38,8 +38,10 @@ function setup() {
 
   status = select('#status');
   sourceImg = select('#sourceImage');
-
+  select('#add-samples').attribute('style', 'display: none')
+  select('#pretrained').mousePressed(pretrain);
   select('#startStop').mousePressed(startStop);
+  select('#add-samples').mousePressed(addSamples);
 
   // Create a new Style Transfer method with a defined style.
   // We give the video as the second argument
@@ -47,26 +49,15 @@ function setup() {
   sadStyle = ml5.styleTransfer('models/wave', video, modelLoaded);
   angryStyle = ml5.styleTransfer('models/hoangho', video, modelLoaded);
   surprisedStyle = ml5.styleTransfer('models/udnie', video, modelLoaded);
+  style = happyStyle;
 
   background(20);
 
   // video.hide();
-  mobilenet = ml5.featureExtractor('MobileNet', {
-    version: 1,
-    alpha: 1.0,
-    topk: 3,
-    learningRate: 0.0001,
-    hiddenUnits: 100,
-    epochs: 20,
-    numClasses: classes.length,
-    batchSize: 0.4,
-  }, () => {
-    console.log('Model is ready!');
-  });
-
+  mobilenet = ml5.featureExtractor('MobileNet', modelLoaded);
   mobilenet.numClasses = classes.length;
 
-  classifier = mobilenet.classification(video);
+  classifier = mobilenet.classification(video, classifierReady);
 
   trainingProgress = select('#training-progress');
 
@@ -96,6 +87,7 @@ function setup() {
         console.log('Training finished!');
         select('#status').html('Classification model trained! Style transfer is ready.');
         classifier.classify(gotResults);
+        classifier.save();
       } else {
         progress = lerp(progress, 100, .2);
         trainingProgress.attribute('style', 'width:' + progress + '%');
@@ -104,9 +96,54 @@ function setup() {
       }
     });
   });
-
   noStroke();
 }
+
+function addSamples(){
+  showControls();
+  select('#status').html('Add samples to retrain the model');
+}
+
+function hideControls(){
+  select('#class1button').attribute('style', 'display: none')
+  select('#class2button').attribute('style', 'display: none')
+  select('#class3button').attribute('style', 'display: none')
+  select('#class4button').attribute('style', 'display: none')
+  select('#pretrained').attribute('style', 'display: none')
+  select('#train-button').attribute('style', 'display: none')
+  select('#add-samples').attribute('style', 'display: inline')
+  select('#training-progress').attribute('style', 'display: none')
+}
+
+function showControls(){
+  select('#class1button').attribute('style', 'display: inline')
+  select('#class2button').attribute('style', 'display: inline')
+  select('#class3button').attribute('style', 'display: inline')
+  select('#class4button').attribute('style', 'display: inline')
+  select('#pretrained').attribute('style', 'display: inline')
+  select('#train-button').attribute('style', 'display: inline')
+  select('#add-samples').attribute('style', 'display: none')
+  select('#training-progress').attribute('style', 'display: inline')
+}
+
+function classifierReady(){
+  pretrain();
+}
+
+function pretrain(){
+  console.log("Pretrain model loaded");
+  classifier.load('models/model.json', pretrainLoaded);
+}
+
+function pretrainLoaded(){
+  hideControls();
+  select('#status').html('Using pretrained model!');
+
+  classifier.classify(gotResults);
+  startStop();
+}
+
+
 
 function draw(){
   // Switch between showing the raw camera or the style
