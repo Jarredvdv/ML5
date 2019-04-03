@@ -1,0 +1,120 @@
+<!--
+ Copyright (c) 2018 ml5
+
+ This software is released under the MIT License.
+ https://opensource.org/licenses/MIT
+-->
+
+
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painting with Emotion</title>
+    <link rel="stylesheet" type="text/css" href="./libraries/bootstrap.min.css">
+    </link>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    </link>
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+    <script src="libraries/model_pca_20_svm.js"></script>
+    <script src="libraries/p5.min.js"></script>
+    <script src="https://unpkg.com/ml5@0.1.3/dist/ml5.min.js"></script>
+    <script src="libraries/p5.dom.min.js"></script>
+    <style>
+    img {
+      width: 250px;
+      height: 250px;
+      display: inline;
+    }
+    </style>
+
+  </head>
+
+
+  <body>
+    <div class="container p-3">
+      <div class="row">
+        <div class="col-md-12">
+        </div>
+      </div>
+    </div>
+    <div id="app" class="container">
+      <div class="row">
+        <div class="col-md-6" id="mainCanvas">
+          <p>Input Image:</p>
+          <img src="images/patagonia.jpg" alt="input img" id="inputImg">
+
+          <div id="styleB">
+            <p>Style B: <a href="https://en.wikipedia.org/wiki/The_Great_Wave_off_Kanagawa">Udnie (Young American Girl, The Dance), 1913 - Francis Picabia</a></p>
+            <img src="images/udnie.jpg" alt="style two">
+          </div>
+        </div>
+        <div class="col-md-6 p-3">
+          <h2>Painting with Emotion</h2>
+          <p id="status">Loading style transfer models...</p>
+          <p id="prediction"></p>
+          <div class="row mt-4 learning-class" id="class1">
+            <h3 class="col-md-12" id="class1-name">
+              Happy
+            </h3>
+            <div class="col-md-12 ">
+              <div id="class1-probability" class="progress-bar bg-success progress-bar-striped" role="progressbar"
+                aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                0%
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4 learning-class" id="class1">
+            <h3 id="class2-name" class="col-md-12">
+              Sad
+            </h3>
+            <div class="col-md-12">
+              <div id="class2-probability" class="progress-bar bg-warning progress-bar-striped" role="progressbar"
+                aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                70%
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4 learning-class" id="class1">
+            <h3 id="class3-name" class="col-md-12">
+              Suprised
+            </h3>
+            <div class="col-md-12">
+              <div id="class3-probability" class="progress-bar bg-info progress-bar-striped" role="progressbar"
+                aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                70%
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4 learning-class" id="class1">
+            <h3 id="class4-name" class="col-md-12">
+              Angry
+            </h3>
+            <div class="col-md-12">
+              <div id="class4-probability" class="progress-bar bg-danger progress-bar-striped" role="progressbar"
+                aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                70%
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="container " id="controls">
+      <div class="row">
+
+        <div class="col-md-4">
+
+          <a href="#" class="btn btn-light " id="startStop"> Transfer </a>
+
+        </div>
+      </div>
+
+      
+    </div>
+    <script src="sketch.js"></script>
+  </body>
+
+</html>
