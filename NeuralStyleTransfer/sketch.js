@@ -28,7 +28,7 @@ function setup() {
   transferBtn.mousePressed(transferImages);
 
   // Create two Style methods with different pre-trained models
-  style1 = ml5.styleTransfer('models/mathura', modelLoaded);
+  style1 = ml5.styleTransfer('models/hoangho', modelLoaded);
   style2 = ml5.styleTransfer('models/hoangho', modelLoaded);
 }
 
